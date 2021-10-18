@@ -6,7 +6,7 @@
 /*   By: rroland <rroland@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/01 19:14:13 by rroland           #+#    #+#             */
-/*   Updated: 2021/10/02 16:11:27 by rroland          ###   ########.fr       */
+/*   Updated: 2021/10/14 18:31:42 by rroland          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,4 +53,35 @@ int	ft_atoi(const char *str)
 	if (ss[i] != 0)
 	return (-1);
 	return (res * k);
+}
+
+int	clear_all(t_all *all, t_philo *philo)
+{
+	free(philo);
+	return (1);
+}
+
+int	print_error(char *str)
+{
+	printf("%s\n", str);
+	return (1);
+}
+
+void	_usleep(long time)
+{
+	struct timeval	begin;
+	struct timeval	current;
+	long			start;
+	long			now;
+
+	gettimeofday(&begin, NULL);
+	gettimeofday(&current, NULL);
+	start = (begin.tv_sec * 1000000) + begin.tv_usec;
+	now = (current.tv_sec * 1000000) + current.tv_usec;
+	while ((now - start) < time)
+	{
+		usleep(50);
+		gettimeofday(&current, NULL);
+		now = (current.tv_sec * 1000000) + current.tv_usec;
+	}
 }

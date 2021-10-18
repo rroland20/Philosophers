@@ -6,62 +6,73 @@
 /*   By: rroland <rroland@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/27 16:12:54 by rroland           #+#    #+#             */
-/*   Updated: 2021/10/12 19:29:59 by rroland          ###   ########.fr       */
+/*   Updated: 2021/10/18 17:52:55 by rroland          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int	clear_all(t_all *all, t_philo *philo)
+long int	give_time(struct timeval tv)
 {
-	free(philo);
-	return (1);
-}
-
-int	print_error(char *str)
-{
-	printf("%s\n", str);
-	return (1);
+	return (tv.tv_sec * 1000 + tv.tv_usec / 1000);
 }
 
 void	*thread(void *philo)
 {
-	int i;
-	t_philo *ph;
+	int				i;
+	struct timeval	tv;
+	long			time;
+	t_philo			*ph;
 
-	i = 1;
+	i = 0;
 	ph = (t_philo *)philo;
-	printf("поток создан\n");
-	while (i <= ph->all->P)
-	{
-		pthread_mutex_lock(&ph->all->fork[i]);
-		usleep(ph->all->to_sleep);
-		pthread_mutex_unlock(&ph->all->fork[i]);
-		i++;
-	}
+	if (gettimeofday(&tv, NULL))
+		return ((void *)1);
+	time = (tv.tv_sec * 1000000) + tv.tv_usec;
+	// time = give_time(tv);
+		pthread_mutex_lock(ph->l_fork);
+		// pthread_mutex_lock(ph->r_fork);
+		_usleep(ph->all->to_sleep);
+		pthread_mutex_unlock(ph->l_fork);
+		// pthread_mutex_unlock(ph->r_fork);
+	printf("поток создан - %d\n", ph->id);
 	return (0);
 }
+
+// void *mutex_die(void *philo)
+// {
+// 	t_philo	*ph;
+// 	int		i;
+
+// 	i = -1;
+// 	ph = (t_philo *)philo;
+// 	pthread_mutex_lock(&ph->all->dead);
+// 	while (++i < ph->all->P)
+// 		ph[i].death = 1;
+// 	pthread_mutex_unlock(&ph->all->dead);
+// 	return (0);
+// }
 
 int	start_thread(t_philo *philo, t_all *all)
 {
 	int i;
 
 	i = 0;
+	// pthread_mutex_lock(&all->dead);
+	// pthread_create(&all->th, NULL, mutex_die, (void *)philo);
 	while (i < all->P)
 	{
-		pthread_create(&philo[i].thread, NULL, thread, (void *)philo);
-		pthread_detach(philo[i].thread);
-		usleep(1000000);
+		pthread_create(&philo[i].thread, NULL, thread, (void *)&(philo[i]));
+		usleep(100000);
 		i++;
 	}
+	i = -1;
+	while (++i < all->P)
+		if(pthread_join(philo[i].thread, NULL))
+			return (1);
 	return (0);
 }
-	// all = malloc(sizeof(t_all));
-	// if (!all)
-	// 	return (print_error("error: memory allocation error"));
 
-
-// кол.философов, вр до смерти, вр на еду, вр на сон, ск раз надо поесть каждому
 int main(int argc, char **argv)
 {
 	t_all		all;
@@ -79,6 +90,15 @@ int main(int argc, char **argv)
 	clear_all(&all, philo);
 	return (0);
 }
+
+
+
+
+
+
+
+
+
 
 
 	// pthread_t	th;

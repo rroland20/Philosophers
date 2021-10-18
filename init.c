@@ -6,7 +6,7 @@
 /*   By: rroland <rroland@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/12 19:16:29 by rroland           #+#    #+#             */
-/*   Updated: 2021/10/14 13:37:38 by rroland          ###   ########.fr       */
+/*   Updated: 2021/10/18 17:08:59 by rroland          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ int	init_fork(t_all *all)
 			return (1);
 		i++;
 	}
+	// pthread_mutex_init(&all->dead, NULL);
 	return (0);
 }
 
@@ -43,10 +44,10 @@ int	init_philo(t_all *all, t_philo *philo)
 		philo[i].think = 0;
 		philo[i].death = 0;
 		if (i != 0)
-			philo[i].l_fork = all->fork[i - 1];
+			philo[i].l_fork = &(all->fork[i - 1]);
 		else
-			philo[i].l_fork = all->fork[all->P - 1];
-		philo[i].r_fork = all->fork[i];
+			philo[i].l_fork = &(all->fork[all->P - 1]);
+		philo[i].r_fork = &(all->fork[i]);
 		i++;
 	}
 	return (0);
