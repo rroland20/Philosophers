@@ -6,7 +6,7 @@
 /*   By: rroland <rroland@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/12 19:16:29 by rroland           #+#    #+#             */
-/*   Updated: 2021/10/18 17:08:59 by rroland          ###   ########.fr       */
+/*   Updated: 2021/10/21 14:58:35 by rroland          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int	init_fork(t_all *all)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	all->fork = malloc(sizeof(pthread_mutex_t) * all->P);
@@ -26,22 +26,23 @@ int	init_fork(t_all *all)
 			return (1);
 		i++;
 	}
-	// pthread_mutex_init(&all->dead, NULL);
+	pthread_mutex_init(&all->dead, NULL);
+	pthread_mutex_init(&all->write, NULL);
 	return (0);
 }
 
 int	init_philo(t_all *all, t_philo *philo)
 {
-	int i;
+	int	i;
 
 	i = 0;
+	all->time_flag = 0;
 	while (i < all->P)
 	{
 		philo[i].all = all;
 		philo[i].id = i + 1;
 		philo[i].eat = 0;
-		philo[i].sleep = 0;
-		philo[i].think = 0;
+		philo[i].num_of_eat = 0;
 		philo[i].death = 0;
 		if (i != 0)
 			philo[i].l_fork = &(all->fork[i - 1]);
@@ -56,9 +57,9 @@ int	init_philo(t_all *all, t_philo *philo)
 int	init_argc(int argc, char **argv, t_all *all, t_philo *philo)
 {
 	all->P = ft_atoi(argv[1]);
-	all->to_die = ft_atoi(argv[2]);
-	all->to_eat = ft_atoi(argv[3]);
-	all->to_sleep = atoi(argv[4]);
+	all->to_die = ft_atoi(argv[2]) * 1000;
+	all->to_eat = ft_atoi(argv[3]) * 1000;
+	all->to_sleep = atoi(argv[4]) * 1000;
 	if (argc == 6)
 	{
 		all->num_of_times = ft_atoi(argv[5]);
@@ -66,7 +67,7 @@ int	init_argc(int argc, char **argv, t_all *all, t_philo *philo)
 			return (1);
 	}
 	else
-			all->num_of_times = -1;
+		all->num_of_times = -1;
 	if (all->P < 1 || all->P > 200 || all->num_of_times < -1 || \
 	all->to_die < 60 || all->to_eat < 60 || all->to_sleep < 60)
 		return (1);

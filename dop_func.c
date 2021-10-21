@@ -6,19 +6,19 @@
 /*   By: rroland <rroland@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/01 19:14:13 by rroland           #+#    #+#             */
-/*   Updated: 2021/10/14 18:31:42 by rroland          ###   ########.fr       */
+/*   Updated: 2021/10/21 17:06:50 by rroland          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-static int		vsp(unsigned char *ss, int *k)
+static int	vsp(unsigned char *ss, int *k)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (ss[i] == '\t' || ss[i] == '\n' || ss[i] == '\v'
-			|| ss[i] == '\f' || ss[i] == '\r' || ss[i] == ' ')
+		|| ss[i] == '\f' || ss[i] == '\r' || ss[i] == ' ')
 		i++;
 	if (ss[i] == '+')
 		i++;
@@ -51,13 +51,23 @@ int	ft_atoi(const char *str)
 			r++;
 	}
 	if (ss[i] != 0)
-	return (-1);
+		return (-1);
 	return (res * k);
 }
 
-int	clear_all(t_all *all, t_philo *philo)
+int	clear_all(t_philo *philo)
 {
-	free(philo);
+	int	i;
+
+	i = -1;
+	while (philo->all->fork && ++i < philo->all->P)
+		pthread_mutex_destroy(philo->all->fork);
+	if (philo->all->fork)
+		free(philo->all->fork);
+	pthread_mutex_destroy(&philo->all->dead);
+	pthread_mutex_destroy(&philo->all->write);
+	if (philo)
+		free(philo);
 	return (1);
 }
 
@@ -80,7 +90,7 @@ void	_usleep(long time)
 	now = (current.tv_sec * 1000000) + current.tv_usec;
 	while ((now - start) < time)
 	{
-		usleep(50);
+		usleep(100);
 		gettimeofday(&current, NULL);
 		now = (current.tv_sec * 1000000) + current.tv_usec;
 	}
