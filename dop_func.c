@@ -6,7 +6,7 @@
 /*   By: rroland <rroland@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/01 19:14:13 by rroland           #+#    #+#             */
-/*   Updated: 2021/10/21 17:06:50 by rroland          ###   ########.fr       */
+/*   Updated: 2021/10/23 18:39:36 by rroland          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,12 +60,18 @@ int	clear_all(t_philo *philo)
 	int	i;
 
 	i = -1;
-	while (philo->all->fork && ++i < philo->all->P)
-		pthread_mutex_destroy(philo->all->fork);
+	if (philo->all->fork && philo->all->P)
+	{
+		while (++i < philo->all->P)
+			pthread_mutex_destroy(&philo->all->fork[i]);
+	}
 	if (philo->all->fork)
 		free(philo->all->fork);
-	pthread_mutex_destroy(&philo->all->dead);
-	pthread_mutex_destroy(&philo->all->write);
+	if (philo->all->dead_flag && philo->all->write_flag)
+	{
+		pthread_mutex_destroy(&philo->all->dead);
+		pthread_mutex_destroy(&philo->all->write);
+	}
 	if (philo)
 		free(philo);
 	return (1);
@@ -95,3 +101,5 @@ void	_usleep(long time)
 		now = (current.tv_sec * 1000000) + current.tv_usec;
 	}
 }
+
+// void	null_struct()

@@ -6,7 +6,7 @@
 /*   By: rroland <rroland@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/27 16:13:09 by rroland           #+#    #+#             */
-/*   Updated: 2021/10/21 17:06:56 by rroland          ###   ########.fr       */
+/*   Updated: 2021/10/23 18:39:12 by rroland          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,8 @@ typedef struct s_all
 	int				time_flag;
 	pthread_t		th;
 	pthread_mutex_t	*fork;
+	int				dead_flag;
+	int				write_flag;
 	pthread_mutex_t	dead;
 	pthread_mutex_t	write;
 	struct timeval	start_time;

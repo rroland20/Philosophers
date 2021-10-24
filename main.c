@@ -6,7 +6,7 @@
 /*   By: rroland <rroland@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/27 16:12:54 by rroland           #+#    #+#             */
-/*   Updated: 2021/10/21 17:06:42 by rroland          ###   ########.fr       */
+/*   Updated: 2021/10/24 20:16:07 by rroland          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,11 +62,12 @@ int	main(int argc, char **argv)
 	t_all		all;
 	t_philo		*philo;
 
+	if ((argc != 5 && argc != 6) || ft_atoi(argv[1]) < 1)
+		return (print_error("error: bad arguments"));
 	philo = malloc(sizeof(t_philo) * ft_atoi(argv[1]));
+	philo->all = &all;
 	if (!philo)
 		return (print_error("error: memory allocation error"));
-	if (argc != 5 && argc != 6)
-		return (print_error("error: bad arguments"));
 	if (init_argc(argc, argv, &all, philo))
 		return (clear_all(philo) && \
 			print_error("error: invalid arguments"));

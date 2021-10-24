@@ -6,7 +6,7 @@
 /*   By: rroland <rroland@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/12 19:16:29 by rroland           #+#    #+#             */
-/*   Updated: 2021/10/21 14:58:35 by rroland          ###   ########.fr       */
+/*   Updated: 2021/10/23 18:33:16 by rroland          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,9 @@ int	init_fork(t_all *all)
 		i++;
 	}
 	pthread_mutex_init(&all->dead, NULL);
+	all->dead_flag = 1;
 	pthread_mutex_init(&all->write, NULL);
+	all->write_flag = 1;
 	return (0);
 }
 
@@ -56,10 +58,13 @@ int	init_philo(t_all *all, t_philo *philo)
 
 int	init_argc(int argc, char **argv, t_all *all, t_philo *philo)
 {
+	all->fork = NULL;
+	all->dead_flag = 0;
+	all->write_flag = 0;
 	all->P = ft_atoi(argv[1]);
 	all->to_die = ft_atoi(argv[2]) * 1000;
 	all->to_eat = ft_atoi(argv[3]) * 1000;
-	all->to_sleep = atoi(argv[4]) * 1000;
+	all->to_sleep = ft_atoi(argv[4]) * 1000;
 	if (argc == 6)
 	{
 		all->num_of_times = ft_atoi(argv[5]);
@@ -69,9 +74,8 @@ int	init_argc(int argc, char **argv, t_all *all, t_philo *philo)
 	else
 		all->num_of_times = -1;
 	if (all->P < 1 || all->P > 200 || all->num_of_times < -1 || \
-	all->to_die < 60 || all->to_eat < 60 || all->to_sleep < 60)
+	all->to_die < 60000 || all->to_eat < 60000 || all->to_sleep < 60000)
 		return (1);
-	all->fork = NULL;
 	if (init_fork(all))
 		return (1);
 	if (init_philo(all, philo))
